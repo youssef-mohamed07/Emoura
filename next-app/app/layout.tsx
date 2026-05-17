@@ -8,6 +8,7 @@ import Toast from "@/components/Toast";
 import CartDrawer from "@/components/CartDrawer";
 import SearchOverlay from "@/components/SearchOverlay";
 import ProductModal from "@/components/ProductModal";
+import MetaPixel from "@/components/MetaPixel";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://emoura.example"),
@@ -67,6 +68,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen overflow-x-hidden">
+        <MetaPixel />
         <StoreProvider>
           <UIProvider>
             <Navbar />

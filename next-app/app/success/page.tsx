@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { formatOrder, waLink } from "@/lib/utils";
+import { track } from "@/lib/track";
 import { useStore } from "@/components/StoreProvider";
 
 const CheckIcon = () => (
@@ -41,6 +42,41 @@ export default function SuccessPage() {
       router.replace("/");
     }
   }, [lastOrder, router]);
+
+  // Fire Purchase to Meta Pixel (browser side). The CAPI side fires from
+  // /api/send-order with the same eventId so Meta dedupes them.
+  const purchaseFiredRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!lastOrder?.eventId) return;
+    if (purchaseFiredRef.current === lastOrder.eventId) return;
+    purchaseFiredRef.current = lastOrder.eventId;
+    track({
+      eventName: "Purchase",
+      eventId: lastOrder.eventId,
+      customData: {
+        currency: "EGP",
+        value: lastOrder.total,
+        order_id: lastOrder.number,
+        num_items: lastOrder.items.reduce((sum, item) => sum + item.qty, 0),
+        content_type: "product",
+        content_ids: lastOrder.items.map((item) => String(item.id)),
+        contents: lastOrder.items.map((item) => ({
+          id: String(item.id),
+          quantity: item.qty,
+          item_price: item.price,
+        })),
+      },
+      userData: {
+        em: lastOrder.email || undefined,
+        ph: lastOrder.phone || undefined,
+        fn: lastOrder.firstName || undefined,
+        ln: lastOrder.lastName || undefined,
+        ct: lastOrder.city || undefined,
+        country: "eg",
+        external_id: lastOrder.number,
+      },
+    });
+  }, [lastOrder]);
 
   if (!lastOrder) return null;
 

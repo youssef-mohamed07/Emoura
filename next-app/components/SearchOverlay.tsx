@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { products } from "@/lib/data";
 import {
   categoryName,
@@ -9,6 +9,7 @@ import {
   productMainImage,
   productName,
 } from "@/lib/utils";
+import { track } from "@/lib/track";
 import { useStore } from "./StoreProvider";
 import { useUI } from "./UIProvider";
 
@@ -29,6 +30,23 @@ export default function SearchOverlay() {
         categoryName(product.category, lang).toLowerCase().includes(q)
     );
   }, [query, lang]);
+
+  // Debounced Search tracking — 700ms after the user stops typing,
+  // and only when the query is meaningful (3+ chars) to avoid noise.
+  useEffect(() => {
+    const trimmed = query.trim();
+    if (!searchOpen || trimmed.length < 3) return;
+    const timer = setTimeout(() => {
+      track({
+        eventName: "Search",
+        customData: {
+          search_string: trimmed,
+          content_ids: results.slice(0, 10).map((product) => String(product.id)),
+        },
+      });
+    }, 700);
+    return () => clearTimeout(timer);
+  }, [query, searchOpen, results]);
 
   if (!searchOpen) return null;
 

@@ -11,7 +11,9 @@ import {
   type ReactNode,
 } from "react";
 import { getT, type T } from "@/lib/i18n";
+import { track } from "@/lib/track";
 import type { CartItem, Lang, Order, Product } from "@/lib/types";
+import { productName } from "@/lib/utils";
 
 interface StoreState {
   lang: Lang;
@@ -108,6 +110,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         return [...items, { ...product, qty }];
       });
       showToast(t.added);
+      track({
+        eventName: "AddToCart",
+        customData: {
+          currency: "EGP",
+          value: product.price * qty,
+          content_type: "product",
+          content_ids: [String(product.id)],
+          content_name: productName(product, "en"),
+          content_category: product.category,
+          contents: [
+            { id: String(product.id), quantity: qty, item_price: product.price },
+          ],
+          num_items: qty,
+        },
+      });
     },
     [showToast, t.added]
   );

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { ORDER_NOTIFICATION_EMAIL } from "@/lib/data";
+import { sendCapiEvents, type MetaServerEvent } from "@/lib/meta";
+import { hashSha256, normalizeEgPhone } from "@/lib/meta";
 
 export const runtime = "nodejs";
 
@@ -10,6 +12,8 @@ interface OrderItem {
   name: string;
   qty: number;
   price: number;
+  id?: number | string;
+  category?: string;
 }
 
 interface OrderPayload {
@@ -28,6 +32,14 @@ interface OrderPayload {
   shippingFee?: number;
   total: number;
   lang?: Lang;
+  /** Shared event id between Pixel (browser) and CAPI (server) for Purchase dedup. */
+  eventId?: string;
+}
+
+interface MetaTrackingMeta {
+  fbp?: string;
+  fbc?: string;
+  eventSourceUrl?: string;
 }
 
 const LABELS = {
@@ -147,11 +159,87 @@ function parseRecipients(value: string | undefined): string[] {
     .filter(Boolean);
 }
 
+function readCookieValue(cookieHeader: string | null, name: string): string | undefined {
+  if (!cookieHeader) return undefined;
+  const match = cookieHeader
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${name}=`));
+  return match ? decodeURIComponent(match.slice(name.length + 1)) : undefined;
+}
+
+function readClientIp(request: Request): string | undefined {
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  if (forwardedFor) return forwardedFor.split(",")[0]?.trim();
+  return request.headers.get("x-real-ip") || undefined;
+}
+
+/**
+ * Send a `Purchase` event to the Meta Conversions API. We do this server-side
+ * (not just the browser pixel) so we still capture the conversion when the
+ * pixel is blocked. The browser pixel uses the same `event_id` for dedup.
+ */
+async function trackPurchase(
+  request: Request,
+  order: OrderPayload,
+  meta: MetaTrackingMeta
+): Promise<void> {
+  if (!order.eventId) return; // no shared id => skip to avoid double-counting
+  const event: MetaServerEvent = {
+    event_name: "Purchase",
+    event_time: Math.floor(Date.now() / 1000),
+    event_id: order.eventId,
+    event_source_url: meta.eventSourceUrl,
+    action_source: "website",
+    user_data: {
+      em: order.email ? hashSha256(order.email) : undefined,
+      ph: order.phone ? hashSha256(normalizeEgPhone(order.phone)) : undefined,
+      fn: order.firstName ? hashSha256(order.firstName) : undefined,
+      ln: order.lastName ? hashSha256(order.lastName) : undefined,
+      ct: order.city ? hashSha256(order.city) : undefined,
+      country: hashSha256("eg"),
+      external_id: order.number,
+      fbp: meta.fbp,
+      fbc: meta.fbc,
+      client_ip_address: readClientIp(request),
+      client_user_agent: request.headers.get("user-agent") || undefined,
+    },
+    custom_data: {
+      currency: "EGP",
+      value: order.total,
+      order_id: order.number,
+      num_items: (order.items || []).reduce(
+        (sum, item) => sum + (item.qty || 1),
+        0
+      ),
+      content_type: "product",
+      content_ids: (order.items || [])
+        .map((item) => (item.id !== undefined ? String(item.id) : ""))
+        .filter(Boolean),
+      contents: (order.items || []).map((item) => ({
+        id: item.id !== undefined ? String(item.id) : item.name,
+        quantity: item.qty || 1,
+        item_price: item.price || 0,
+      })),
+    },
+  };
+  await sendCapiEvents([event]);
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const order = body?.order as OrderPayload | undefined;
+    const meta: MetaTrackingMeta = body?.meta || {};
     const lang: Lang = order?.lang === "en" ? "en" : "ar";
+
+    // Pull fbp / fbc from cookies if the client didn't pass them.
+    const cookieHeader = request.headers.get("cookie");
+    const trackingMeta: MetaTrackingMeta = {
+      fbp: meta.fbp || readCookieValue(cookieHeader, "_fbp"),
+      fbc: meta.fbc || readCookieValue(cookieHeader, "_fbc"),
+      eventSourceUrl: meta.eventSourceUrl,
+    };
 
     const envRecipients = parseRecipients(process.env.ORDER_NOTIFICATION_EMAIL);
     const recipients =
@@ -226,6 +314,14 @@ export async function POST(request: Request) {
         },
         { status: 502 }
       );
+    }
+
+    // Best-effort Purchase event to Meta Conversions API. Don't fail the
+    // request if this throws or the env isn't configured.
+    try {
+      await trackPurchase(request, order, trackingMeta);
+    } catch (capiError) {
+      console.error("[send-order] CAPI Purchase failed:", capiError);
     }
 
     return NextResponse.json({

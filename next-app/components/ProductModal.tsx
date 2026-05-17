@@ -2,12 +2,13 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   categoryName,
   currency,
   productName,
 } from "@/lib/utils";
+import { track } from "@/lib/track";
 import type { Product } from "@/lib/types";
 import { useStore } from "./StoreProvider";
 import { useUI } from "./UIProvider";
@@ -33,6 +34,24 @@ function ModalBody({ product, close }: { product: Product; close: () => void }) 
   const [qty, setQty] = useState(1);
   const [activeImage, setActiveImage] = useState<string>(gallery[0]);
   const fav = favorites.includes(product.id);
+
+  // Fire ViewContent once per product opening
+  useEffect(() => {
+    track({
+      eventName: "ViewContent",
+      customData: {
+        currency: "EGP",
+        value: product.price,
+        content_type: "product",
+        content_ids: [String(product.id)],
+        content_name: productName(product, "en"),
+        content_category: product.category,
+        contents: [
+          { id: String(product.id), quantity: 1, item_price: product.price },
+        ],
+      },
+    });
+  }, [product]);
 
   return (
     <div

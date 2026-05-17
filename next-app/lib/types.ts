@@ -46,4 +46,6 @@ export interface Order extends CheckoutForm {
   subtotal: number;
   shippingFee: number;
   total: number;
+  /** Shared event id between Pixel (browser) and CAPI (server) for Purchase dedup. */
+  eventId?: string;
 }

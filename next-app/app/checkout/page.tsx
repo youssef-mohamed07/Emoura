@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getShippingFee, governorates } from "@/lib/data";
 import {
   currency,
@@ -12,6 +12,7 @@ import {
   productName,
   validateEgPhone,
 } from "@/lib/utils";
+import { track } from "@/lib/track";
 import type { CartItem, CheckoutForm, Order, PaymentMethod } from "@/lib/types";
 import Input from "@/components/Input";
 import { useStore } from "@/components/StoreProvider";
@@ -112,6 +113,30 @@ export default function CheckoutPage() {
     }
   }, [items.length, router]);
 
+  // InitiateCheckout once per checkout session entry
+  const initiatedRef = useRef(false);
+  useEffect(() => {
+    if (initiatedRef.current || !items.length) return;
+    initiatedRef.current = true;
+    const value = items.reduce((sum, item) => sum + item.price * item.qty, 0);
+    const numItems = items.reduce((sum, item) => sum + item.qty, 0);
+    track({
+      eventName: "InitiateCheckout",
+      customData: {
+        currency: "EGP",
+        value,
+        num_items: numItems,
+        content_type: "product",
+        content_ids: items.map((item) => String(item.id)),
+        contents: items.map((item) => ({
+          id: String(item.id),
+          quantity: item.qty,
+          item_price: item.price,
+        })),
+      },
+    });
+  }, [items]);
+
   const [form, setForm] = useState<CheckoutForm>({
     firstName: "",
     lastName: "",
@@ -159,12 +184,14 @@ export default function CheckoutPage() {
       return;
     }
     setSubmitting(true);
+    const eventId = `pur-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
     const order: Order = {
       number: `EM${Date.now().toString().slice(-8)}`,
       items,
       subtotal,
       shippingFee,
       total,
+      eventId,
       ...form,
     };
     try {
@@ -178,10 +205,16 @@ export default function CheckoutPage() {
             subtotal,
             shippingFee,
             items: order.items.map((item) => ({
+              id: item.id,
+              category: item.category,
               name: productName(item, lang),
               qty: item.qty,
               price: item.price,
             })),
+          },
+          meta: {
+            eventSourceUrl:
+              typeof window !== "undefined" ? window.location.href : undefined,
           },
         }),
       });
