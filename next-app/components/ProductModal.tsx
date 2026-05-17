@@ -36,7 +36,7 @@ function ModalBody({ product, close }: { product: Product; close: () => void }) 
 
   return (
     <div
-      className="fixed inset-0 z-[80] grid place-items-center bg-rosedark/45 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[80] grid place-items-center bg-rosedark/45 p-2 backdrop-blur-sm sm:p-4"
       onClick={close}
       role="dialog"
       aria-modal="true"
@@ -44,10 +44,10 @@ function ModalBody({ product, close }: { product: Product; close: () => void }) 
     >
       <div
         onClick={(event) => event.stopPropagation()}
-        className="grid max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-2xl bg-white shadow-soft lg:grid-cols-2"
+        className="grid max-h-[95vh] w-full max-w-5xl overflow-y-auto rounded-xl bg-white shadow-soft sm:rounded-2xl lg:grid-cols-2 lg:max-h-[90vh]"
       >
-        <div className="bg-rosepale p-6 sm:p-8">
-          <div className="relative mx-auto h-[320px] w-full overflow-hidden rounded-2xl sm:h-[420px]">
+        <div className="bg-rosepale p-4 sm:p-6 lg:p-8">
+          <div className="relative mx-auto h-64 w-full overflow-hidden rounded-xl xs:h-72 sm:h-[420px] sm:rounded-2xl">
             <Image
               src={activeImage}
               alt={productName(product, lang)}
@@ -58,13 +58,13 @@ function ModalBody({ product, close }: { product: Product; close: () => void }) 
             />
           </div>
           {gallery.length > 1 && (
-            <div className="mt-4 grid grid-cols-3 gap-2">
+            <div className="mt-3 grid grid-cols-3 gap-2 sm:mt-4">
               {gallery.map((image, index) => (
                 <button
                   key={image}
                   type="button"
                   onClick={() => setActiveImage(image)}
-                  className={`relative h-20 overflow-hidden rounded-lg border-2 transition ${
+                  className={`relative h-16 overflow-hidden rounded-lg border-2 transition sm:h-20 ${
                     activeImage === image
                       ? "border-rosebrand"
                       : "border-transparent hover:border-roselight"
@@ -83,14 +83,14 @@ function ModalBody({ product, close }: { product: Product; close: () => void }) 
             </div>
           )}
         </div>
-        <div className="p-6 sm:p-8">
-          <div className="mb-5 flex items-center justify-between gap-3">
+        <div className="p-4 sm:p-6 lg:p-8">
+          <div className="mb-4 flex items-center justify-between gap-3 sm:mb-5">
             <button
               type="button"
               onClick={() => toggleFavorite(product.id)}
               aria-pressed={fav}
               aria-label={fav ? t.favRemoved : t.favAdded}
-              className={`grid h-11 w-11 place-items-center rounded-full text-xl ${
+              className={`grid h-10 w-10 place-items-center rounded-full text-lg sm:h-11 sm:w-11 sm:text-xl ${
                 fav
                   ? "bg-rosebrand text-white"
                   : "bg-roselight text-rosedark"
@@ -105,30 +105,30 @@ function ModalBody({ product, close }: { product: Product; close: () => void }) 
               {t.close}
             </button>
           </div>
-          <div className="text-sm font-black text-rosebrand">
+          <div className="text-xs font-black text-rosebrand sm:text-sm">
             {categoryName(product.category, lang)}
           </div>
-          <h2 className="mt-2 text-3xl font-bold text-rosedark sm:text-4xl">
+          <h2 className="mt-2 text-2xl font-bold text-rosedark sm:text-3xl lg:text-4xl">
             {productName(product, lang)}
           </h2>
           <div className="mt-3">
             <Stars rating={product.rating} />
           </div>
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <span className="text-3xl font-black text-rosebrand">
+          <div className="mt-4 flex flex-wrap items-center gap-2 sm:gap-3">
+            <span className="text-2xl font-black text-rosebrand sm:text-3xl">
               {currency(product.price, lang)}
             </span>
-            <span className="font-bold text-stone-400 line-through">
+            <span className="text-sm font-bold text-stone-400 line-through sm:text-base">
               {currency(product.oldPrice, lang)}
             </span>
-            <span className="rounded-full bg-rosebrand px-3 py-1 text-xs font-black text-white">
+            <span className="rounded-full bg-rosebrand px-2.5 py-1 text-[10px] font-black text-white sm:px-3 sm:text-xs">
               {product.discount}% {t.discount}
             </span>
           </div>
-          <p className="mt-5 leading-8 text-stone-600">
+          <p className="mt-4 text-sm leading-7 text-stone-600 sm:mt-5 sm:text-base sm:leading-8">
             {t.productDescription}
           </p>
-          <div className="mt-6 flex items-center gap-3">
+          <div className="mt-5 flex items-center gap-3 sm:mt-6">
             <span className="font-black text-rosedark">{t.quantity}</span>
             <div className="flex items-center rounded-full border border-roselight bg-cream">
               <button
@@ -152,14 +152,14 @@ function ModalBody({ product, close }: { product: Product; close: () => void }) 
               </button>
             </div>
           </div>
-          <div className="mt-7 grid gap-3 sm:grid-cols-2">
+          <div className="mt-6 grid gap-3 sm:mt-7 sm:grid-cols-2">
             <button
               type="button"
               onClick={() => {
                 addToCart(product, qty);
                 close();
               }}
-              className="rounded-full bg-rosebrand px-6 py-4 font-black text-white shadow-soft hover:bg-rosedark"
+              className="rounded-full bg-rosebrand px-6 py-3.5 font-black text-white shadow-soft hover:bg-rosedark sm:py-4"
             >
               {t.addToCart}
             </button>
@@ -170,15 +170,21 @@ function ModalBody({ product, close }: { product: Product; close: () => void }) 
                 close();
                 router.push("/checkout");
               }}
-              className="rounded-full bg-gold px-6 py-4 font-black text-rosedark shadow-gold hover:bg-rosebrand hover:text-white"
+              className="rounded-full bg-gold px-6 py-3.5 font-black text-rosedark shadow-gold hover:bg-rosebrand hover:text-white sm:py-4"
             >
               {t.buyNow}
             </button>
           </div>
-          <div className="mt-6 grid gap-2 text-sm font-black text-rosedark sm:grid-cols-3">
-            <span className="rounded-lg bg-rosepale p-3 text-center">{t.trust1}</span>
-            <span className="rounded-lg bg-rosepale p-3 text-center">{t.trust2}</span>
-            <span className="rounded-lg bg-rosepale p-3 text-center">{t.trust3}</span>
+          <div className="mt-5 grid grid-cols-1 gap-2 text-xs font-black text-rosedark xs:grid-cols-3 sm:mt-6 sm:text-sm">
+            <span className="rounded-lg bg-rosepale p-3 text-center">
+              {t.trust1}
+            </span>
+            <span className="rounded-lg bg-rosepale p-3 text-center">
+              {t.trust2}
+            </span>
+            <span className="rounded-lg bg-rosepale p-3 text-center">
+              {t.trust3}
+            </span>
           </div>
         </div>
       </div>

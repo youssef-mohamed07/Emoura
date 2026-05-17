@@ -43,5 +43,7 @@ export interface CheckoutForm {
 export interface Order extends CheckoutForm {
   number: string;
   items: CartItem[];
+  subtotal: number;
+  shippingFee: number;
   total: number;
 }

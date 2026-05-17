@@ -62,16 +62,16 @@ export default function CartDrawer() {
         role="dialog"
         aria-label={t.cart}
       >
-        <div className="flex items-center justify-between border-b border-roselight p-5">
-          <h2 className="text-3xl font-bold text-rosedark">{t.cart}</h2>
+        <div className="flex items-center justify-between border-b border-roselight p-4 sm:p-5">
+          <h2 className="text-2xl font-bold text-rosedark sm:text-3xl">{t.cart}</h2>
           <button
             onClick={closeCart}
-            className="rounded-full bg-roselight px-4 py-2 font-black text-rosedark hover:bg-rosebrand hover:text-white"
+            className="rounded-full bg-roselight px-4 py-2 text-sm font-black text-rosedark hover:bg-rosebrand hover:text-white"
           >
             {t.close}
           </button>
         </div>
-        <div className="flex-1 space-y-4 overflow-y-auto p-5">
+        <div className="flex-1 space-y-3 overflow-y-auto p-4 sm:space-y-4 sm:p-5">
           {!cart.length && (
             <div className="rounded-lg bg-rosepale p-6 text-center font-bold text-rosedark">
               {t.emptyCart}
@@ -82,7 +82,7 @@ export default function CartDrawer() {
               key={item.id}
               className="flex gap-3 rounded-lg border border-roselight p-3"
             >
-              <div className="relative h-20 w-20 overflow-hidden rounded-lg bg-rosepale">
+              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-rosepale sm:h-20 sm:w-20">
                 <Image
                   src={productMainImage(item)}
                   alt={productName(item, lang)}
@@ -92,7 +92,7 @@ export default function CartDrawer() {
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="font-black text-rosedark">
+                <div className="line-clamp-2 text-sm font-black text-rosedark sm:text-base">
                   {productName(item, lang)}
                 </div>
                 <div className="text-sm font-black text-rosebrand">
@@ -128,8 +128,8 @@ export default function CartDrawer() {
             </div>
           ))}
         </div>
-        <div className="border-t border-roselight p-5">
-          <div className="mb-4 flex items-center justify-between text-lg font-black text-rosedark">
+        <div className="border-t border-roselight p-4 sm:p-5">
+          <div className="mb-3 flex items-center justify-between text-base font-black text-rosedark sm:mb-4 sm:text-lg">
             <span>{t.total}</span>
             <span>{currency(subtotal, lang)}</span>
           </div>
@@ -137,7 +137,7 @@ export default function CartDrawer() {
             type="button"
             disabled={!cart.length}
             onClick={goCheckout}
-            className="mb-3 w-full rounded-full bg-rosebrand px-5 py-4 font-black text-white transition hover:bg-rosedark disabled:cursor-not-allowed disabled:opacity-40"
+            className="mb-3 w-full rounded-full bg-rosebrand px-5 py-3.5 text-sm font-black text-white transition hover:bg-rosedark disabled:cursor-not-allowed disabled:opacity-40 sm:py-4 sm:text-base"
           >
             {t.checkout}
           </button>
@@ -146,7 +146,7 @@ export default function CartDrawer() {
             target="_blank"
             rel="noopener noreferrer"
             aria-disabled={!cart.length}
-            className={`block w-full rounded-full bg-[#25D366] px-5 py-4 text-center font-black text-white transition hover:bg-[#1ebe5d] ${
+            className={`block w-full rounded-full bg-[#25D366] px-5 py-3.5 text-center text-sm font-black text-white transition hover:bg-[#1ebe5d] sm:py-4 sm:text-base ${
               !cart.length ? "pointer-events-none opacity-40" : ""
             }`}
           >

@@ -34,29 +34,29 @@ export default function SearchOverlay() {
 
   return (
     <div
-      className="fixed inset-0 z-[85] overflow-y-auto bg-cream/95 p-4 pt-24 backdrop-blur-xl"
+      className="fixed inset-0 z-[85] overflow-y-auto bg-cream/95 p-3 pt-20 backdrop-blur-xl sm:p-4 sm:pt-24"
       role="dialog"
       aria-modal="true"
       aria-label={t.search}
     >
       <div className="mx-auto max-w-3xl">
-        <div className="flex gap-3">
+        <div className="flex gap-2 sm:gap-3">
           <input
             autoFocus
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={t.searchPlaceholder}
-            className="w-full rounded-full border border-roselight bg-white px-6 py-4 font-bold outline-none focus:border-rosebrand"
+            className="w-full rounded-full border border-roselight bg-white px-4 py-3 text-sm font-bold outline-none focus:border-rosebrand sm:px-6 sm:py-4 sm:text-base"
             aria-label={t.search}
           />
           <button
             onClick={closeSearch}
-            className="rounded-full bg-roselight px-5 font-black text-rosedark hover:bg-rosebrand hover:text-white"
+            className="shrink-0 rounded-full bg-roselight px-4 text-sm font-black text-rosedark hover:bg-rosebrand hover:text-white sm:px-5 sm:text-base"
           >
             {t.close}
           </button>
         </div>
-        <div className="mt-6 grid gap-3 pb-10">
+        <div className="mt-5 grid gap-3 pb-10 sm:mt-6">
           {results.length ? (
             results.map((product) => (
               <button
@@ -66,9 +66,9 @@ export default function SearchOverlay() {
                   setSelectedProduct(product);
                   closeSearch();
                 }}
-                className="flex items-center gap-4 rounded-lg bg-white p-3 text-start shadow-sm transition hover:shadow-soft"
+                className="flex items-center gap-3 rounded-lg bg-white p-3 text-start shadow-sm transition hover:shadow-soft sm:gap-4"
               >
-                <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-rosepale">
+                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-rosepale sm:h-16 sm:w-16">
                   <Image
                     src={productMainImage(product)}
                     alt={productName(product, lang)}
@@ -77,10 +77,10 @@ export default function SearchOverlay() {
                     className="object-cover"
                   />
                 </div>
-                <span className="flex-1 font-black text-rosedark">
+                <span className="line-clamp-2 flex-1 text-sm font-black text-rosedark sm:text-base">
                   {productName(product, lang)}
                 </span>
-                <span className="font-black text-rosebrand">
+                <span className="shrink-0 text-sm font-black text-rosebrand sm:text-base">
                   {currency(product.price, lang)}
                 </span>
               </button>

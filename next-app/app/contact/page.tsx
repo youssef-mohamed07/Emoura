@@ -56,30 +56,30 @@ export default function ContactPage() {
   ];
 
   return (
-    <main className="page mx-auto max-w-7xl px-4 pb-16 pt-28 sm:px-6 lg:px-8">
-      <header className="mb-10 max-w-2xl">
-        <span className="text-xs font-black tracking-[.18em] text-rosebrand">
+    <main className="page mx-auto max-w-7xl px-4 pb-12 pt-24 sm:px-6 sm:pb-16 sm:pt-28 lg:px-8">
+      <header className="mb-8 max-w-2xl sm:mb-10">
+        <span className="text-[10px] font-black tracking-[.18em] text-rosebrand sm:text-xs">
           {t.contactBadge}
         </span>
-        <h1 className="mt-3 text-5xl font-bold text-rosedark sm:text-6xl">
+        <h1 className="mt-3 text-4xl font-bold text-rosedark sm:text-5xl md:text-6xl">
           {t.contactUs}
         </h1>
-        <p className="mt-4 text-base font-semibold leading-8 text-stone-600">
+        <p className="mt-4 text-sm font-semibold leading-7 text-stone-600 sm:text-base sm:leading-8">
           {t.contactSubtitle}
         </p>
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-[1.05fr_.95fr]">
+      <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.05fr_.95fr]">
         {/* Form */}
-        <section className="rounded-2xl bg-white p-6 shadow-soft sm:p-8">
-          <h2 className="text-2xl font-bold text-rosedark sm:text-3xl">
+        <section className="rounded-2xl bg-white p-5 shadow-soft sm:p-6 md:p-8">
+          <h2 className="text-xl font-bold text-rosedark sm:text-2xl md:text-3xl">
             {t.sendMessage}
           </h2>
           <p className="mt-1 text-sm font-semibold text-stone-500">
             {t.sendMessageSub}
           </p>
 
-          <div className="mt-6 grid gap-4">
+          <div className="mt-5 grid gap-4 sm:mt-6">
             <div className="grid gap-4 sm:grid-cols-2">
               <Input
                 label={t.yourName}
@@ -115,7 +115,7 @@ export default function ContactPage() {
               target="_blank"
               rel="noopener noreferrer"
               aria-disabled={!form.message.trim()}
-              className={`mt-2 rounded-full bg-rosebrand px-6 py-4 text-center text-base font-black text-white shadow-soft transition hover:bg-rosedark ${
+              className={`mt-2 rounded-full bg-rosebrand px-6 py-3.5 text-center text-sm font-black text-white shadow-soft transition hover:bg-rosedark sm:py-4 sm:text-base ${
                 !form.message.trim() ? "pointer-events-none opacity-40" : ""
               }`}
             >
@@ -125,23 +125,23 @@ export default function ContactPage() {
         </section>
 
         {/* Contact info */}
-        <section className="rounded-2xl bg-white p-6 shadow-soft sm:p-8">
-          <h2 className="text-2xl font-bold text-rosedark sm:text-3xl">
+        <section className="rounded-2xl bg-white p-5 shadow-soft sm:p-6 md:p-8">
+          <h2 className="text-xl font-bold text-rosedark sm:text-2xl md:text-3xl">
             {t.reachUs}
           </h2>
           <p className="mt-1 text-sm font-semibold text-stone-500">
             {t.reachUsSub}
           </p>
 
-          <ul className="mt-6 divide-y divide-roselight">
+          <ul className="mt-5 divide-y divide-roselight sm:mt-6">
             {cards.map((card) => {
               const inner = (
                 <>
-                  <span className="block text-xs font-black tracking-[.15em] text-rosebrand">
+                  <span className="block text-[10px] font-black tracking-[.15em] text-rosebrand sm:text-xs">
                     {card.label}
                   </span>
                   <span
-                    className="mt-2 block break-all text-base font-bold text-rosedark"
+                    className="mt-2 block break-all text-sm font-bold text-rosedark sm:text-base"
                     dir="ltr"
                     style={{ textAlign: "start" }}
                   >
@@ -156,12 +156,12 @@ export default function ContactPage() {
                       href={card.link}
                       target={card.external ? "_blank" : undefined}
                       rel={card.external ? "noopener noreferrer" : undefined}
-                      className="block py-4 transition hover:text-rosebrand"
+                      className="block py-3 transition hover:text-rosebrand sm:py-4"
                     >
                       {inner}
                     </a>
                   ) : (
-                    <div className="py-4">{inner}</div>
+                    <div className="py-3 sm:py-4">{inner}</div>
                   )}
                 </li>
               );
@@ -172,7 +172,7 @@ export default function ContactPage() {
             href={waLink(lang === "ar" ? "Hello Emoura, I need help" : "Hello Emoura, I need help")}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 block rounded-full bg-rosedark px-6 py-4 text-center font-black text-white transition hover:bg-rosebrand"
+            className="mt-5 block rounded-full bg-rosedark px-6 py-3.5 text-center text-sm font-black text-white transition hover:bg-rosebrand sm:mt-6 sm:py-4 sm:text-base"
           >
             {t.helpWhatsApp}
           </a>

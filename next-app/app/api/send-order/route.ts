@@ -24,6 +24,8 @@ interface OrderPayload {
   notes?: string;
   payment?: string;
   items: OrderItem[];
+  subtotal?: number;
+  shippingFee?: number;
   total: number;
   lang?: Lang;
 }
@@ -41,6 +43,8 @@ const LABELS = {
     product: "المنتج",
     qty: "الكمية",
     price: "السعر",
+    subtotal: "الإجمالي الفرعي",
+    shipping: "الشحن",
     total: "الإجمالي",
     subject: (n: string) => `طلب جديد ${n} - Emoura`,
     cod: "الدفع عند الاستلام",
@@ -60,6 +64,8 @@ const LABELS = {
     product: "Product",
     qty: "Qty",
     price: "Price",
+    subtotal: "Subtotal",
+    shipping: "Shipping",
     total: "Total",
     subject: (n: string) => `New order ${n} - Emoura`,
     cod: "Cash on Delivery",
@@ -117,7 +123,19 @@ function buildHtml(order: OrderPayload, lang: Lang): string {
       </thead>
       <tbody>${itemsRows}</tbody>
     </table>
-    <p style="margin-top:12px;"><strong>${L.total}:</strong> ${currency(order.total, lang)}</p>
+    <div style="margin-top:14px;padding:12px 14px;background:#fff;border:1px solid #eee;border-radius:8px;">
+      ${
+        typeof order.subtotal === "number"
+          ? `<p style="margin:0 0 6px;display:flex;justify-content:space-between;"><span>${L.subtotal}</span><span>${currency(order.subtotal, lang)}</span></p>`
+          : ""
+      }
+      ${
+        typeof order.shippingFee === "number"
+          ? `<p style="margin:0 0 6px;display:flex;justify-content:space-between;"><span>${L.shipping}</span><span>${currency(order.shippingFee, lang)}</span></p>`
+          : ""
+      }
+      <p style="margin:6px 0 0;display:flex;justify-content:space-between;font-weight:700;color:#a9783d;border-top:1px solid #f0e3cf;padding-top:8px;"><span>${L.total}</span><span>${currency(order.total, lang)}</span></p>
+    </div>
   </div>`;
 }
 

@@ -54,48 +54,48 @@ export default function SuccessPage() {
   ];
 
   return (
-    <main className="page mx-auto max-w-3xl px-4 pb-16 pt-28 sm:px-6 lg:px-8">
+    <main className="page mx-auto max-w-3xl px-4 pb-12 pt-24 sm:px-6 sm:pb-16 sm:pt-28 lg:px-8">
       {/* Success header */}
-      <section className="rounded-3xl bg-white p-8 text-center shadow-soft sm:p-12">
-        <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-rosepale text-rosebrand ring-8 ring-rosepale/40">
+      <section className="rounded-2xl bg-white p-6 text-center shadow-soft sm:rounded-3xl sm:p-8 md:p-12">
+        <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-rosepale text-rosebrand ring-8 ring-rosepale/40 sm:h-20 sm:w-20">
           <CheckIcon />
         </div>
 
-        <h1 className="mt-6 text-4xl font-bold text-rosedark sm:text-5xl">
+        <h1 className="mt-5 text-3xl font-bold text-rosedark sm:mt-6 sm:text-4xl md:text-5xl">
           {customerName
             ? `${customerName}${lang === "ar" ? "،" : ","} ${t.successHeadline}`
             : t.successHeadline}
         </h1>
 
-        <p className="mx-auto mt-4 max-w-xl text-base font-semibold leading-8 text-stone-600 sm:text-lg">
+        <p className="mx-auto mt-4 max-w-xl text-sm font-semibold leading-7 text-stone-600 sm:text-base sm:leading-8 md:text-lg">
           {t.successMessage}
         </p>
 
         {/* Order number */}
-        <div className="mx-auto mt-8 inline-flex flex-col items-center rounded-2xl border border-roselight bg-rosepale px-10 py-5">
-          <span className="text-xs font-black tracking-[.18em] text-rosebrand">
+        <div className="mx-auto mt-7 inline-flex flex-col items-center rounded-2xl border border-roselight bg-rosepale px-6 py-4 sm:mt-8 sm:px-10 sm:py-5">
+          <span className="text-[10px] font-black tracking-[.18em] text-rosebrand sm:text-xs">
             {t.orderNumber}
           </span>
-          <span className="mt-1 text-3xl font-black text-rosedark sm:text-4xl">
+          <span className="mt-1 text-2xl font-black text-rosedark sm:text-3xl md:text-4xl">
             #{lastOrder.number}
           </span>
-          <span className="mt-2 text-xs font-semibold text-stone-500">
+          <span className="mt-2 text-[10px] font-semibold text-stone-500 sm:text-xs">
             {t.successKeepNumber}
           </span>
         </div>
       </section>
 
       {/* Next steps timeline */}
-      <section className="mt-6 rounded-3xl bg-white p-6 shadow-sm sm:p-8">
-        <h2 className="text-xl font-bold text-rosedark sm:text-2xl">
+      <section className="mt-5 rounded-2xl bg-white p-5 shadow-sm sm:mt-6 sm:rounded-3xl sm:p-6 md:p-8">
+        <h2 className="text-lg font-bold text-rosedark sm:text-xl md:text-2xl">
           {t.nextSteps}
         </h2>
 
-        <ol className="mt-6 space-y-5">
+        <ol className="mt-5 space-y-4 sm:mt-6 sm:space-y-5">
           {steps.map((step, index) => (
-            <li key={step.title} className="flex gap-4">
+            <li key={step.title} className="flex gap-3 sm:gap-4">
               <div className="flex flex-col items-center">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-rosebrand text-xs font-black text-white">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-rosebrand text-[10px] font-black text-white sm:h-9 sm:w-9 sm:text-xs">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 {index < steps.length - 1 && (
@@ -106,10 +106,10 @@ export default function SuccessPage() {
                 )}
               </div>
               <div className="flex-1 pb-2">
-                <h3 className="text-base font-black text-rosedark">
+                <h3 className="text-sm font-black text-rosedark sm:text-base">
                   {step.title}
                 </h3>
-                <p className="mt-1 text-sm font-semibold leading-7 text-stone-500">
+                <p className="mt-1 text-xs font-semibold leading-6 text-stone-500 sm:text-sm sm:leading-7">
                   {step.sub}
                 </p>
               </div>
@@ -119,25 +119,25 @@ export default function SuccessPage() {
       </section>
 
       {/* Actions */}
-      <section className="mt-6 grid gap-3 sm:grid-cols-2">
+      <section className="mt-5 grid gap-3 sm:mt-6 sm:grid-cols-2">
         <a
           href={waLink(message)}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-4 text-base font-black text-white shadow-soft transition hover:bg-[#1ebe5d]"
+          className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3.5 text-sm font-black text-white shadow-soft transition hover:bg-[#1ebe5d] sm:py-4 sm:text-base"
         >
           <WhatsAppIcon />
           <span>{t.contactWhatsApp}</span>
         </a>
         <Link
           href="/"
-          className="rounded-full bg-rosedark px-6 py-4 text-center text-base font-black text-white transition hover:bg-rosebrand"
+          className="rounded-full bg-rosedark px-6 py-3.5 text-center text-sm font-black text-white transition hover:bg-rosebrand sm:py-4 sm:text-base"
         >
           {t.continueShopping}
         </Link>
       </section>
 
-      <p className="mt-6 text-center text-xs font-semibold text-stone-500">
+      <p className="mt-5 text-center text-xs font-semibold text-stone-500 sm:mt-6">
         {t.needHelp}{" "}
         <a
           href={waLink("Hello Emoura, I have a question about my order")}

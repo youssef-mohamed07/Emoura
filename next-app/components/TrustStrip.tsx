@@ -82,27 +82,29 @@ export default function TrustStrip() {
   ];
 
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-10 sm:py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <header className="mb-10 text-center">
-          <span className="text-xs font-black tracking-[.2em] text-rosebrand">
+        <header className="mb-8 text-center sm:mb-10">
+          <span className="text-[10px] font-black tracking-[.2em] text-rosebrand sm:text-xs">
             {t.whyEmoura}
           </span>
-          <h2 className="mt-3 text-3xl font-bold text-rosedark sm:text-4xl">
+          <h2 className="mt-3 text-2xl font-bold text-rosedark sm:text-3xl md:text-4xl">
             {t.whyEmouraSub}
           </h2>
         </header>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {items.map(({ title, sub, Icon }) => (
             <div
               key={title}
-              className="group rounded-2xl border border-white/60 bg-white/70 p-6 backdrop-blur transition hover:-translate-y-1 hover:border-rosebrand/30 hover:bg-white hover:shadow-soft"
+              className="group rounded-2xl border border-white/60 bg-white/70 p-4 backdrop-blur transition hover:-translate-y-1 hover:border-rosebrand/30 hover:bg-white hover:shadow-soft sm:p-6"
             >
-              <span className="grid h-12 w-12 place-items-center rounded-xl bg-rosepale text-rosebrand shadow-sm transition group-hover:bg-rosebrand group-hover:text-white">
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-rosepale text-rosebrand shadow-sm transition group-hover:bg-rosebrand group-hover:text-white sm:h-12 sm:w-12">
                 <Icon />
               </span>
-              <h3 className="mt-5 text-lg font-black text-rosedark">{title}</h3>
-              <p className="mt-2 text-sm font-semibold leading-7 text-stone-500">
+              <h3 className="mt-4 text-base font-black text-rosedark sm:mt-5 sm:text-lg">
+                {title}
+              </h3>
+              <p className="mt-2 text-xs font-semibold leading-6 text-stone-500 sm:text-sm sm:leading-7">
                 {sub}
               </p>
             </div>

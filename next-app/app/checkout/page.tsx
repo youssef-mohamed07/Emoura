@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { governorates } from "@/lib/data";
+import { getShippingFee, governorates } from "@/lib/data";
 import {
   currency,
   paymentLabel,
@@ -97,7 +97,7 @@ export default function CheckoutPage() {
     () => (buyNowItem ? [buyNowItem] : cart),
     [buyNowItem, cart]
   );
-  const total = useMemo(
+  const subtotal = useMemo(
     () => items.reduce((sum, item) => sum + item.price * item.qty, 0),
     [items]
   );
@@ -142,6 +142,12 @@ export default function CheckoutPage() {
     items.length > 0
   );
 
+  const shippingFee = useMemo(
+    () => (form.governorate ? getShippingFee(form.governorate, lang) : 0),
+    [form.governorate, lang]
+  );
+  const total = subtotal + shippingFee;
+
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!valid || submitting) {
@@ -156,6 +162,8 @@ export default function CheckoutPage() {
     const order: Order = {
       number: `EM${Date.now().toString().slice(-8)}`,
       items,
+      subtotal,
+      shippingFee,
       total,
       ...form,
     };
@@ -167,6 +175,8 @@ export default function CheckoutPage() {
           order: {
             ...order,
             lang,
+            subtotal,
+            shippingFee,
             items: order.items.map((item) => ({
               name: productName(item, lang),
               qty: item.qty,
@@ -192,32 +202,32 @@ export default function CheckoutPage() {
   const steps = [t.stepInfo, t.stepDelivery, t.stepPayment];
 
   return (
-    <main className="page mx-auto max-w-7xl px-4 pb-16 pt-28 sm:px-6 lg:px-8">
-      <header className="mb-8 flex items-center justify-between gap-4">
-        <div>
-          <span className="text-xs font-black tracking-[.18em] text-rosebrand">
+    <main className="page mx-auto max-w-7xl px-4 pb-12 pt-24 sm:px-6 sm:pb-16 sm:pt-28 lg:px-8">
+      <header className="mb-6 flex items-start justify-between gap-3 sm:mb-8 sm:items-center sm:gap-4">
+        <div className="min-w-0">
+          <span className="text-[10px] font-black tracking-[.18em] text-rosebrand sm:text-xs">
             {t.checkoutBadge}
           </span>
-          <h1 className="mt-2 text-4xl font-bold text-rosedark sm:text-5xl">
+          <h1 className="mt-2 text-3xl font-bold text-rosedark sm:text-4xl md:text-5xl">
             {t.checkout}
           </h1>
-          <p className="mt-2 text-sm font-semibold text-stone-500">
+          <p className="mt-2 text-xs font-semibold text-stone-500 sm:text-sm">
             {t.checkoutSubtitle}
           </p>
         </div>
         <Link
           href="/"
-          className="hidden rounded-full bg-white px-5 py-3 text-sm font-black text-rosedark shadow-sm hover:bg-roselight sm:inline-flex"
+          className="hidden shrink-0 rounded-full bg-white px-5 py-3 text-sm font-black text-rosedark shadow-sm hover:bg-roselight sm:inline-flex"
         >
           {t.back}
         </Link>
       </header>
 
       {/* Steps indicator */}
-      <ol className="mb-8 flex items-center gap-2 sm:gap-4">
+      <ol className="mb-6 flex items-center gap-2 sm:mb-8 sm:gap-4">
         {steps.map((label, index) => (
           <li key={label} className="flex flex-1 items-center gap-2 sm:gap-3">
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-rosebrand text-xs font-black text-white">
+            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-rosebrand text-[10px] font-black text-white sm:h-8 sm:w-8 sm:text-xs">
               {String(index + 1).padStart(2, "0")}
             </span>
             <span className="hidden text-sm font-black text-rosedark sm:inline">
@@ -230,14 +240,14 @@ export default function CheckoutPage() {
         ))}
       </ol>
 
-      <form onSubmit={submit} className="grid gap-6 lg:grid-cols-[1fr_400px]">
-        <div className="space-y-6">
+      <form onSubmit={submit} className="grid gap-5 sm:gap-6 lg:grid-cols-[1fr_400px]">
+        <div className="space-y-5 sm:space-y-6">
           {/* Personal info */}
-          <section className="rounded-2xl bg-white p-6 shadow-sm sm:p-8">
-            <h2 className="text-xl font-bold text-rosedark sm:text-2xl">
+          <section className="rounded-2xl bg-white p-5 shadow-sm sm:p-6 md:p-8">
+            <h2 className="text-lg font-bold text-rosedark sm:text-xl md:text-2xl">
               {t.personalInfo}
             </h2>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="mt-4 grid gap-4 sm:mt-5 sm:grid-cols-2">
               <Input
                 label={`${t.firstName} *`}
                 value={form.firstName}
@@ -273,11 +283,11 @@ export default function CheckoutPage() {
           </section>
 
           {/* Delivery */}
-          <section className="rounded-2xl bg-white p-6 shadow-sm sm:p-8">
-            <h2 className="text-xl font-bold text-rosedark sm:text-2xl">
+          <section className="rounded-2xl bg-white p-5 shadow-sm sm:p-6 md:p-8">
+            <h2 className="text-lg font-bold text-rosedark sm:text-xl md:text-2xl">
               {t.deliveryAddress}
             </h2>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="mt-4 grid gap-4 sm:mt-5 sm:grid-cols-2">
               <label className="text-sm font-black text-rosedark">
                 {t.governorate} *
                 <select
@@ -326,11 +336,11 @@ export default function CheckoutPage() {
           </section>
 
           {/* Payment */}
-          <section className="rounded-2xl bg-white p-6 shadow-sm sm:p-8">
-            <h2 className="text-xl font-bold text-rosedark sm:text-2xl">
+          <section className="rounded-2xl bg-white p-5 shadow-sm sm:p-6 md:p-8">
+            <h2 className="text-lg font-bold text-rosedark sm:text-xl md:text-2xl">
               {t.paymentMethod}
             </h2>
-            <div className="mt-5 grid gap-3">
+            <div className="mt-4 grid gap-3 sm:mt-5">
               <PaymentOption
                 active={form.payment === "cod"}
                 onClick={() => set("payment", "cod" as PaymentMethod)}
@@ -359,20 +369,20 @@ export default function CheckoutPage() {
 
         {/* Order summary */}
         <aside className="h-fit space-y-4 lg:sticky lg:top-28">
-          <section className="rounded-2xl bg-white p-6 shadow-soft sm:p-7">
-            <div className="flex items-baseline justify-between">
-              <h2 className="text-xl font-bold text-rosedark sm:text-2xl">
+          <section className="rounded-2xl bg-white p-5 shadow-soft sm:p-6 md:p-7">
+            <div className="flex items-baseline justify-between gap-2">
+              <h2 className="text-lg font-bold text-rosedark sm:text-xl md:text-2xl">
                 {t.orderSummary}
               </h2>
-              <span className="text-xs font-bold text-stone-500">
+              <span className="shrink-0 text-xs font-bold text-stone-500">
                 {itemsCount} {t.items}
               </span>
             </div>
 
-            <ul className="mt-5 space-y-3">
+            <ul className="mt-4 space-y-3 sm:mt-5">
               {items.map((item) => (
                 <li key={item.id} className="flex items-center gap-3">
-                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-rosepale">
+                  <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-rosepale sm:h-14 sm:w-14">
                     <Image
                       src={productMainImage(item)}
                       alt={productName(item, lang)}
@@ -385,7 +395,7 @@ export default function CheckoutPage() {
                     </span>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-black text-rosedark">
+                    <div className="line-clamp-1 text-sm font-black text-rosedark">
                       {productName(item, lang)}
                     </div>
                     <div className="mt-1 text-xs font-bold text-stone-500">
@@ -402,13 +412,19 @@ export default function CheckoutPage() {
             <div className="mt-5 space-y-2 border-t border-roselight pt-4">
               <div className="flex justify-between text-sm font-bold text-stone-600">
                 <span>{t.subtotal}</span>
-                <span>{currency(total, lang)}</span>
+                <span>{currency(subtotal, lang)}</span>
               </div>
-              <div className="flex justify-between text-sm font-bold text-stone-600">
+              <div className="flex justify-between gap-2 text-sm font-bold text-stone-600">
                 <span>{t.delivery}</span>
-                <span className="text-rosebrand">{t.deliveryFree}</span>
+                {form.governorate ? (
+                  <span>{currency(shippingFee, lang)}</span>
+                ) : (
+                  <span className="text-end text-xs font-semibold text-stone-400">
+                    {t.deliveryHint}
+                  </span>
+                )}
               </div>
-              <div className="flex justify-between border-t border-roselight pt-3 text-lg font-black text-rosedark">
+              <div className="flex justify-between border-t border-roselight pt-3 text-base font-black text-rosedark sm:text-lg">
                 <span>{t.total}</span>
                 <span>{currency(total, lang)}</span>
               </div>
@@ -417,7 +433,7 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={!valid || submitting}
-              className="mt-5 w-full rounded-full bg-rosebrand px-5 py-4 text-base font-black text-white transition hover:bg-rosedark disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-5 w-full rounded-full bg-rosebrand px-5 py-3.5 text-sm font-black text-white transition hover:bg-rosedark disabled:cursor-not-allowed disabled:opacity-50 sm:py-4 sm:text-base"
             >
               {submitting ? t.processing : t.confirmOrder}
             </button>

@@ -21,10 +21,10 @@ export default function Ticker() {
           "Glow Naturally",
         ];
   return (
-    <div className="overflow-hidden bg-rosedark py-4 text-white" aria-hidden="true">
-      <div className="flex w-max animate-ticker gap-10 text-sm font-black">
+    <div className="overflow-hidden bg-rosedark py-3 text-white sm:py-4" aria-hidden="true">
+      <div className="flex w-max animate-ticker gap-6 text-xs font-black sm:gap-10 sm:text-sm">
         {Array.from({ length: 2 }).map((_, index) => (
-          <div key={index} className="flex gap-10 px-5">
+          <div key={index} className="flex gap-6 px-3 sm:gap-10 sm:px-5">
             {words.map((word) => (
               <span key={`${index}-${word}`}>{word}</span>
             ))}

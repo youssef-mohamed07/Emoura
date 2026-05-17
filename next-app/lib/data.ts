@@ -31,3 +31,69 @@ export const governorates: Record<"ar" | "en", string[]> = {
   ar: ["القاهرة", "الجيزة", "الإسكندرية", "الدقهلية", "البحر الأحمر", "البحيرة", "الفيوم", "الغربية", "الإسماعيلية", "المنوفية", "المنيا", "القليوبية", "الوادي الجديد", "السويس", "أسوان", "أسيوط", "بني سويف", "بورسعيد", "دمياط", "الشرقية", "جنوب سيناء", "كفر الشيخ", "مطروح", "الأقصر", "قنا", "شمال سيناء", "سوهاج"],
   en: ["Cairo", "Giza", "Alexandria", "Dakahlia", "Red Sea", "Beheira", "Fayoum", "Gharbia", "Ismailia", "Monufia", "Minya", "Qalyubia", "New Valley", "Suez", "Aswan", "Assiut", "Beni Suef", "Port Said", "Damietta", "Sharqia", "South Sinai", "Kafr El Sheikh", "Matrouh", "Luxor", "Qena", "North Sinai", "Sohag"],
 };
+
+// Each governorate has a stable key so labels in Arabic and English map to the same shipping fee.
+// The order of the arrays above matches the order of GOVERNORATE_KEYS.
+export const GOVERNORATE_KEYS = [
+  "cairo", "giza", "alexandria", "dakahlia", "red-sea", "beheira", "fayoum",
+  "gharbia", "ismailia", "monufia", "minya", "qalyubia", "new-valley", "suez",
+  "aswan", "assiut", "beni-suef", "port-said", "damietta", "sharqia",
+  "south-sinai", "kafr-el-sheikh", "matrouh", "luxor", "qena", "north-sinai", "sohag",
+] as const;
+
+export type GovernorateKey = (typeof GOVERNORATE_KEYS)[number];
+
+export const governorateLabel = (key: GovernorateKey, lang: "ar" | "en"): string => {
+  const index = GOVERNORATE_KEYS.indexOf(key);
+  return governorates[lang][index] || key;
+};
+
+// Shipping fees in EGP, based on the carrier's updated price plan.
+export const SHIPPING_FEES: Record<GovernorateKey, number> = {
+  // Cairo & Giza – 70
+  "cairo": 70,
+  "giza": 70,
+  // Alexandria – 85
+  "alexandria": 85,
+  // Lower Egypt (Delta) & Canal cities – 85
+  "dakahlia": 85,
+  "beheira": 85,
+  "gharbia": 85,
+  "monufia": 85,
+  "qalyubia": 85,
+  "sharqia": 85,
+  "kafr-el-sheikh": 85,
+  "damietta": 85,
+  "ismailia": 85,
+  "port-said": 85,
+  "suez": 85,
+  // Upper Egypt – 95
+  "fayoum": 95,
+  "minya": 95,
+  "beni-suef": 95,
+  "assiut": 95,
+  "sohag": 95,
+  "qena": 95,
+  "luxor": 95,
+  "aswan": 95,
+  // Remote / Red Sea / Western Desert – 120
+  "red-sea": 120,
+  "matrouh": 120,
+  "new-valley": 120,
+  "north-sinai": 120,
+  // Sharm El Sheikh / South Sinai – 145
+  "south-sinai": 145,
+};
+
+export const getShippingFee = (governorate: string, lang: "ar" | "en" = "ar"): number => {
+  // First try matching by label in either language
+  const arIndex = governorates.ar.indexOf(governorate);
+  if (arIndex !== -1) return SHIPPING_FEES[GOVERNORATE_KEYS[arIndex]];
+  const enIndex = governorates.en.indexOf(governorate);
+  if (enIndex !== -1) return SHIPPING_FEES[GOVERNORATE_KEYS[enIndex]];
+  // Fallback to key lookup
+  if ((GOVERNORATE_KEYS as readonly string[]).includes(governorate)) {
+    return SHIPPING_FEES[governorate as GovernorateKey];
+  }
+  return 0;
+};

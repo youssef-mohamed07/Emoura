@@ -75,36 +75,36 @@ export default function HomeShop() {
   };
 
   return (
-    <main className="page pt-20">
+    <main className="page pt-16 sm:pt-20">
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,250,242,.90),rgba(248,239,228,.78)_55%,rgba(214,177,95,.38))]" />
-        <div className="relative mx-auto grid min-h-[calc(100vh-80px)] max-w-7xl items-center gap-12 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_.95fr] lg:px-8">
+        <div className="relative mx-auto grid min-h-[calc(100vh-64px)] max-w-7xl items-center gap-8 px-4 py-8 sm:min-h-[calc(100vh-80px)] sm:gap-12 sm:px-6 sm:py-12 lg:grid-cols-[1.05fr_.95fr] lg:px-8">
           <div className="max-w-2xl">
-            <span className="mb-5 inline-flex rounded-full border border-gold/40 bg-white/70 px-4 py-2 text-sm font-extrabold text-rosebrand">
+            <span className="mb-4 inline-flex rounded-full border border-gold/40 bg-white/70 px-3 py-1.5 text-xs font-extrabold text-rosebrand sm:mb-5 sm:px-4 sm:py-2 sm:text-sm">
               {t.heroBadge}
             </span>
-            <h1 className="text-5xl font-bold leading-[.95] text-rosedark sm:text-7xl lg:text-8xl">
+            <h1 className="text-4xl font-bold leading-[.95] text-rosedark xs:text-5xl sm:text-7xl lg:text-8xl">
               Emoura
             </h1>
-            <p className="mt-5 max-w-xl text-lg font-semibold leading-9 text-stone-700">
+            <p className="mt-4 max-w-xl text-base font-semibold leading-8 text-stone-700 sm:mt-5 sm:text-lg sm:leading-9">
               {t.heroText}
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap gap-3 sm:mt-8">
               <a
                 href="#products"
                 onClick={scrollToProducts}
-                className="rounded-full bg-rosebrand px-7 py-4 text-sm font-extrabold text-white shadow-soft transition hover:bg-rosedark"
+                className="rounded-full bg-rosebrand px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-rosedark sm:px-7 sm:py-4"
               >
                 {t.shopNow}
               </a>
               <Link
                 href="/about"
-                className="rounded-full border border-rosebrand/25 bg-white/70 px-7 py-4 text-sm font-extrabold text-rosedark transition hover:bg-white"
+                className="rounded-full border border-rosebrand/25 bg-white/70 px-5 py-3 text-sm font-extrabold text-rosedark transition hover:bg-white sm:px-7 sm:py-4"
               >
                 {t.ourStory}
               </Link>
             </div>
-            <div className="mt-9 grid max-w-lg grid-cols-3 gap-3">
+            <div className="mt-7 grid max-w-lg grid-cols-3 gap-2 sm:mt-9 sm:gap-3">
               {(
                 [
                   ["500+", t.clients],
@@ -114,21 +114,25 @@ export default function HomeShop() {
               ).map(([num, label]) => (
                 <div
                   key={label}
-                  className="glass rounded-lg border border-white p-4 text-center shadow-sm"
+                  className="glass rounded-lg border border-white p-3 text-center shadow-sm sm:p-4"
                 >
-                  <div className="text-2xl font-black text-rosebrand">{num}</div>
-                  <div className="text-xs font-bold text-stone-500">{label}</div>
+                  <div className="text-lg font-black text-rosebrand sm:text-2xl">
+                    {num}
+                  </div>
+                  <div className="text-[10px] font-bold text-stone-500 sm:text-xs">
+                    {label}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
           <div className="relative mx-auto w-full max-w-lg">
-            <div className="absolute end-4 top-6 z-10 animate-float rounded-full bg-gold px-5 py-3 text-sm font-black text-rosedark shadow-gold">
+            <div className="absolute end-3 top-4 z-10 animate-float rounded-full bg-gold px-3 py-2 text-xs font-black text-rosedark shadow-gold sm:end-4 sm:top-6 sm:px-5 sm:py-3 sm:text-sm">
               {t.heroOffer}
             </div>
-            <div className="relative overflow-hidden rounded-[2rem] border border-white bg-white/80 p-5 shadow-soft">
+            <div className="relative overflow-hidden rounded-[1.5rem] border border-white bg-white/80 p-3 shadow-soft sm:rounded-[2rem] sm:p-5">
               <div className="absolute inset-y-0 end-0 w-16 animate-shine bg-white/40 blur-xl" />
-              <div className="relative mx-auto h-[360px] w-full overflow-hidden rounded-[1.5rem]">
+              <div className="relative mx-auto h-[260px] w-full overflow-hidden rounded-[1.25rem] xs:h-[300px] sm:h-[360px] sm:rounded-[1.5rem]">
                 <Image
                   src={heroProduct.img}
                   alt={productName(heroProduct, lang)}
@@ -140,16 +144,16 @@ export default function HomeShop() {
                   fetchPriority="high"
                 />
               </div>
-              <div className="mt-4 flex items-center justify-between rounded-2xl bg-rosepale p-4">
-                <div>
-                  <div className="text-sm font-extrabold text-rosedark">
+              <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl bg-rosepale p-3 sm:mt-4 sm:p-4">
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-extrabold text-rosedark">
                     {productName(heroProduct, lang)}
                   </div>
-                  <div className="text-xs font-bold text-stone-500">
+                  <div className="truncate text-xs font-bold text-stone-500">
                     {t.featuredOfferSub}
                   </div>
                 </div>
-                <div className="text-xl font-black text-rosebrand">
+                <div className="shrink-0 text-lg font-black text-rosebrand sm:text-xl">
                   {currency(heroProduct.price, lang)}
                 </div>
               </div>
@@ -161,15 +165,19 @@ export default function HomeShop() {
       <Categories setFilter={setFilter} />
       <section
         id="products"
-        className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8"
+        className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8"
       >
-        <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:gap-5 md:flex-row md:items-end md:justify-between">
           <div>
-            <span className="text-sm font-black text-rosebrand">Shop Emoura</span>
-            <h2 className="mt-2 text-5xl font-bold text-rosedark">{t.products}</h2>
+            <span className="text-xs font-black text-rosebrand sm:text-sm">
+              Shop Emoura
+            </span>
+            <h2 className="mt-2 text-3xl font-bold text-rosedark sm:text-5xl">
+              {t.products}
+            </h2>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <div className="flex max-w-full gap-2 overflow-x-auto hide-scroll">
+            <div className="-mx-4 flex max-w-full gap-2 overflow-x-auto px-4 hide-scroll sm:mx-0 sm:px-0">
               <Chip active={filter === "all"} onClick={() => setFilter("all")}>
                 {t.all}
               </Chip>
@@ -197,13 +205,13 @@ export default function HomeShop() {
           </div>
         </div>
         {visible.length ? (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
             {visible.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl bg-white p-10 text-center font-bold text-rosedark shadow-sm">
+          <div className="rounded-2xl bg-white p-8 text-center font-bold text-rosedark shadow-sm sm:p-10">
             {t.noResults}
           </div>
         )}

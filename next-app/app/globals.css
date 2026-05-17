@@ -8,6 +8,8 @@
   }
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   body {
     font-family: "Cairo", sans-serif;
@@ -24,6 +26,34 @@
     color: #3b2a24;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  /* iOS / mobile: fixed attachment is buggy and expensive */
+  @media (max-width: 768px) {
+    body {
+      background-attachment: scroll;
+    }
+  }
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+  }
+  /* Prevent iOS auto-zoom on form focus when font-size < 16px */
+  @media (max-width: 640px) {
+    input,
+    textarea,
+    select {
+      font-size: 16px;
+    }
   }
   h1,
   h2,
@@ -64,7 +94,7 @@
   opacity: 1;
   transform: translateY(0);
 }
-@media (hover: none) {
+@media (hover: none), (max-width: 1024px) {
   .product-card .actions {
     opacity: 1;
     transform: none;

@@ -52,6 +52,12 @@ export const formatOrder = (order: Order, lang: Lang = "ar"): string => {
                 lang
               )}`
           ),
+          typeof order.subtotal === "number"
+            ? `الإجمالي الفرعي: ${currency(order.subtotal, lang)}`
+            : "",
+          typeof order.shippingFee === "number"
+            ? `الشحن: ${currency(order.shippingFee, lang)}`
+            : "",
           `الإجمالي: ${currency(order.total, lang)}`,
         ]
       : [
@@ -71,6 +77,12 @@ export const formatOrder = (order: Order, lang: Lang = "ar"): string => {
                 lang
               )}`
           ),
+          typeof order.subtotal === "number"
+            ? `Subtotal: ${currency(order.subtotal, lang)}`
+            : "",
+          typeof order.shippingFee === "number"
+            ? `Shipping: ${currency(order.shippingFee, lang)}`
+            : "",
           `Total: ${currency(order.total, lang)}`,
         ];
   return lines.filter(Boolean).join("\n");
