@@ -1,0 +1,153 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { formatOrder, waLink } from "@/lib/utils";
+import { useStore } from "@/components/StoreProvider";
+
+const CheckIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="h-10 w-10"
+    aria-hidden="true"
+  >
+    <path d="M5 12.5l4.5 4.5L19 7.5" />
+  </svg>
+);
+
+const WhatsAppIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className="h-5 w-5"
+    aria-hidden="true"
+  >
+    <path d="M20.52 3.48A11.86 11.86 0 0 0 12.04 0C5.5 0 .19 5.31.19 11.85c0 2.09.55 4.13 1.59 5.93L0 24l6.4-1.68a11.86 11.86 0 0 0 5.64 1.43h.01c6.55 0 11.86-5.31 11.86-11.85 0-3.17-1.23-6.14-3.39-8.42zM12.04 21.7h-.01a9.85 9.85 0 0 1-5.02-1.37l-.36-.21-3.79 1 1.01-3.7-.23-.38a9.84 9.84 0 0 1-1.5-5.19c0-5.43 4.42-9.85 9.85-9.85 2.63 0 5.1 1.03 6.96 2.89a9.78 9.78 0 0 1 2.89 6.97c0 5.43-4.43 9.84-9.8 9.84zm5.4-7.37c-.3-.15-1.74-.86-2.01-.96-.27-.1-.47-.15-.66.15-.2.3-.76.96-.93 1.16-.17.2-.34.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.65-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.34.45-.51.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.66-1.6-.91-2.18-.24-.58-.49-.5-.66-.51-.17-.01-.37-.01-.57-.01s-.52.07-.79.37c-.27.3-1.04 1.02-1.04 2.48s1.06 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.5.71.3 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.09 1.74-.71 1.99-1.4.25-.69.25-1.27.17-1.4-.07-.13-.27-.2-.57-.35z" />
+  </svg>
+);
+
+export default function SuccessPage() {
+  const router = useRouter();
+  const { t, lang, lastOrder } = useStore();
+
+  useEffect(() => {
+    if (!lastOrder) {
+      router.replace("/");
+    }
+  }, [lastOrder, router]);
+
+  if (!lastOrder) return null;
+
+  const message = formatOrder(lastOrder, lang);
+  const customerName = lastOrder.firstName ? lastOrder.firstName : null;
+
+  const steps = [
+    { title: t.step1Title, sub: t.step1Sub },
+    { title: t.step2Title, sub: t.step2Sub },
+    { title: t.step3Title, sub: t.step3Sub },
+  ];
+
+  return (
+    <main className="page mx-auto max-w-3xl px-4 pb-16 pt-28 sm:px-6 lg:px-8">
+      {/* Success header */}
+      <section className="rounded-3xl bg-white p-8 text-center shadow-soft sm:p-12">
+        <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-rosepale text-rosebrand ring-8 ring-rosepale/40">
+          <CheckIcon />
+        </div>
+
+        <h1 className="mt-6 text-4xl font-bold text-rosedark sm:text-5xl">
+          {customerName
+            ? `${customerName}${lang === "ar" ? "،" : ","} ${t.successHeadline}`
+            : t.successHeadline}
+        </h1>
+
+        <p className="mx-auto mt-4 max-w-xl text-base font-semibold leading-8 text-stone-600 sm:text-lg">
+          {t.successMessage}
+        </p>
+
+        {/* Order number */}
+        <div className="mx-auto mt-8 inline-flex flex-col items-center rounded-2xl border border-roselight bg-rosepale px-10 py-5">
+          <span className="text-xs font-black tracking-[.18em] text-rosebrand">
+            {t.orderNumber}
+          </span>
+          <span className="mt-1 text-3xl font-black text-rosedark sm:text-4xl">
+            #{lastOrder.number}
+          </span>
+          <span className="mt-2 text-xs font-semibold text-stone-500">
+            {t.successKeepNumber}
+          </span>
+        </div>
+      </section>
+
+      {/* Next steps timeline */}
+      <section className="mt-6 rounded-3xl bg-white p-6 shadow-sm sm:p-8">
+        <h2 className="text-xl font-bold text-rosedark sm:text-2xl">
+          {t.nextSteps}
+        </h2>
+
+        <ol className="mt-6 space-y-5">
+          {steps.map((step, index) => (
+            <li key={step.title} className="flex gap-4">
+              <div className="flex flex-col items-center">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-rosebrand text-xs font-black text-white">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                {index < steps.length - 1 && (
+                  <span
+                    className="mt-1 w-px flex-1 bg-roselight"
+                    aria-hidden="true"
+                  />
+                )}
+              </div>
+              <div className="flex-1 pb-2">
+                <h3 className="text-base font-black text-rosedark">
+                  {step.title}
+                </h3>
+                <p className="mt-1 text-sm font-semibold leading-7 text-stone-500">
+                  {step.sub}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* Actions */}
+      <section className="mt-6 grid gap-3 sm:grid-cols-2">
+        <a
+          href={waLink(message)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-4 text-base font-black text-white shadow-soft transition hover:bg-[#1ebe5d]"
+        >
+          <WhatsAppIcon />
+          <span>{t.contactWhatsApp}</span>
+        </a>
+        <Link
+          href="/"
+          className="rounded-full bg-rosedark px-6 py-4 text-center text-base font-black text-white transition hover:bg-rosebrand"
+        >
+          {t.continueShopping}
+        </Link>
+      </section>
+
+      <p className="mt-6 text-center text-xs font-semibold text-stone-500">
+        {t.needHelp}{" "}
+        <a
+          href={waLink("Hello Emoura, I have a question about my order")}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-black text-rosebrand hover:text-rosedark"
+        >
+          {t.contactUs}
+        </a>
+      </p>
+    </main>
+  );
+}

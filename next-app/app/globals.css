@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: "Cairo", sans-serif;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 250, 242, 0.94),
+        rgba(248, 239, 228, 0.88) 55%,
+        rgba(214, 177, 95, 0.3)
+      ),
+      url("/assets/hero-background.jpeg");
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    color: #3b2a24;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1,
+  h2,
+  h3,
+  .display-font {
+    font-family: "Cormorant Garamond", serif;
+  }
+  :focus-visible {
+    outline: 2px solid #a9783d;
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+}
+
+@layer utilities {
+  .hide-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scroll {
+    scrollbar-width: none;
+  }
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+  .page {
+    animation: fadePage 0.35s ease both;
+  }
+}
+
+.product-card .actions {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+.product-card:hover .actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (hover: none) {
+  .product-card .actions {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fadePage {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
